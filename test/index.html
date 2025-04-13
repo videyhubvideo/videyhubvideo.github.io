@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEST</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .video-container {
+      width: 100%;
+      max-width: 720px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    #locker18 {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    #locker18-box {
+      background: #fff;
+      padding: 30px 20px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    #locker18-box h2 {
+      font-size: 22px;
+      color: #111;
+      margin-bottom: 10px;
+    }
+
+    #locker18-box p {
+      font-size: 15px;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    #countdown {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ff0066;
+      margin-bottom: 20px;
+    }
+
+    #continueBtn {
+      background-color: #ff0066;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: not-allowed;
+      transition: background-color 0.2s ease;
+      opacity: 0.6;
+    }
+
+    #continueBtn.active {
+      cursor: pointer;
+      opacity: 1;
+    }
+
+    #continueBtn.active:hover {
+      background-color: #e6005c;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-container">
+    <video id="myVideo" autoplay muted controls playsinline>
+      <source src="https://cdn.videy.co/tsROIRJd1.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- Content Locker -->
+  <div id="locker18">
+    <div id="locker18-box">
+      <h2>Unlock the Full Experience 🔥</h2>
+      <p>Watch in Full HD — No Ads, No Limits. Just You & Me 😘</p>
+      <div id="countdown">Please wait 10 seconds...</div>
+      <button id="continueBtn" disabled>Unlock Now</button>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById("myVideo");
+    const locker = document.getElementById("locker18");
+    const continueBtn = document.getElementById("continueBtn");
+    const countdown = document.getElementById("countdown");
+    const redirectUrl = "https://youtube.com"; // Ganti dengan URL asli
+
+    let redirectReady = false;
+
+    video.addEventListener("ended", () => {
+      locker.style.display = "flex";
+
+      let timeLeft = 10;
+      countdown.textContent = `Please wait ${timeLeft} seconds...`;
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+          countdown.textContent = `Please wait ${timeLeft} seconds...`;
+        } else {
+          clearInterval(timer);
+          countdown.style.display = "none";
+          continueBtn.disabled = false;
+          continueBtn.classList.add("active");
+          redirectReady = true;
+
+          // Manual click
+          continueBtn.onclick = () => {
+            window.location.href = redirectUrl;
+          };
+
+          // Click anywhere
+          locker.addEventListener("click", () => {
+            if (redirectReady) {
+              window.location.href = redirectUrl;
+            }
+          });
+        }
+      }, 1000);
+    });
+  </script>
+
+</body>
+</html>

@@ -32,8 +32,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      backdrop-filter: blur(8px);
-      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px); /* Blur dikurangi */
+      background: rgba(0, 0, 0, 0.4); /* Semi transparan */
       z-index: 100;
       display: none;
       justify-content: center;
@@ -42,7 +42,7 @@
 
     .locker-popup {
       position: relative;
-      background: rgba(0, 0, 0, 0.88);
+      background: rgba(0, 0, 0, 0.85);
       padding: 25px;
       border-radius: 15px;
       text-align: center;
@@ -162,7 +162,6 @@
     const randomLinks = [
       'https://example.com/offer1',
       'https://example.com/offer2',
-      'https://cdn.videy.co/W9x4Ylbp1.mp4', // link asli
       'https://example.com/offer3'
     ];
 
@@ -177,16 +176,16 @@
       }, randomTime * 1000);
     });
 
-    // Tombol Skip → redirect ke link acak
+    // Tombol Skip → hanya lanjutkan nonton
     skipBtn.addEventListener('click', () => {
-      const randomLink = randomLinks[Math.floor(Math.random() * randomLinks.length)];
-      window.location.href = randomLink;
+      overlay.style.display = 'none';
+      video.play();
     });
 
     // Tombol Close → buka link acak di tab baru + lanjutkan video
     closeBtn.addEventListener('click', () => {
       const randomLink = randomLinks[Math.floor(Math.random() * randomLinks.length)];
-      window.open(randomLink, '_blank'); // buka tab baru
+      window.open(randomLink, '_blank');
       overlay.style.display = 'none';
       video.play();
     });
@@ -205,4 +204,3 @@
 
 </body>
 </html>
-

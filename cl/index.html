@@ -43,7 +43,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.9);
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -58,6 +58,12 @@
             max-width: 500px;
             width: 90%;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .locker-title {
@@ -99,46 +105,54 @@
             border: 1px solid white;
         }
         
-        .locked-content {
-            filter: blur(5px);
-            pointer-events: none;
+        .video-wrapper {
+            position: relative;
         }
         
-        .preview-message {
+        .end-message {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
     <div class="content-locker" id="contentLocker">
         <div class="locker-content">
-            <div class="locker-title">🔒 Konten Terkunci</div>
+            <div class="locker-title">🔒 Ingin Menonton Lebih Banyak?</div>
             <div class="locker-message">
-                Untuk mengakses konten eksklusif ini, Anda perlu berlangganan atau menyelesaikan penawaran kami.
+                Video ini telah berakhir. Untuk mengakses konten eksklusif lainnya, silakan berlangganan atau selesaikan penawaran kami.
             </div>
             <div class="unlock-options">
                 <button class="unlock-btn" onclick="unlockContent('subscribe')">
                     Berlangganan Sekarang ($9.99/bulan)
                 </button>
                 <button class="unlock-btn secondary" onclick="unlockContent('offer')">
-                    Tonton Iklan untuk Membuka Sementara
+                    Tonton Iklan untuk Membuka Video Lainnya
+                </button>
+                <button class="unlock-btn secondary" onclick="replayVideo()">
+                    Putar Ulang Video Ini
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="video-container locked-content" id="mainContent">
-        <div class="preview-message">Konten terkunci - Buka untuk melihat</div>
-        <div class="separator" style="clear: both; text-align: center;">
-            <iframe width="100%" height="400px" src="https://cdn.videy.co/j5yTytYC1.mp4" frameborder="0"></iframe>
+    <div class="video-container">
+        <div class="video-wrapper">
+            <iframe id="mainVideo" width="100%" height="400px" src="https://cdn.videy.co/j5yTytYC1.mp4" frameborder="0"></iframe>
+            <div class="end-message" id="endMessage">
+                <h3>Video Telah Berakhir</h3>
+                <p>Memuat opsi...</p>
+            </div>
         </div>
         <div class="ad-banner">
             <img src="https://via.placeholder.com/728x90" alt="Advertisement">
@@ -146,33 +160,69 @@
     </div>
 
     <script>
-        // Simple content locker functionality
+        // Mendeteksi ketika video selesai
+        const video = document.getElementById('mainVideo');
+        const endMessage = document.getElementById('endMessage');
+        const contentLocker = document.getElementById('contentLocker');
+        
+        // Untuk iframe, kita perlu menggunakan postMessage untuk mendeteksi akhir video
+        // Ini adalah solusi sederhana, untuk implementasi nyata mungkin perlu API khusus
+        // dari penyedia video Anda
+        
+        // Solusi alternatif dengan timer (untuk demo)
+        let videoDuration = 60000; // 1 menit (sesuaikan dengan durasi video sebenarnya)
+        let videoEnded = false;
+        
+        // Timer untuk simulasi video berakhir
+        setTimeout(function() {
+            if(!videoEnded) {
+                showContentLocker();
+                videoEnded = true;
+            }
+        }, videoDuration);
+        
+        // Fungsi untuk menampilkan content locker
+        function showContentLocker() {
+            endMessage.style.display = 'flex';
+            setTimeout(() => {
+                contentLocker.style.display = 'flex';
+            }, 2000); // Tampilkan locker setelah 2 detik pesan akhir
+        }
+        
+        // Fungsi untuk opsi unlock
         function unlockContent(method) {
             if (method === 'subscribe') {
-                // Redirect to subscription page
                 alert('Anda akan diarahkan ke halaman pembayaran');
                 // window.location.href = '/subscribe';
             } else if (method === 'offer') {
-                // Show an ad or complete an offer
                 alert('Silakan tonton iklan berikut untuk membuka konten');
-                // In a real implementation, you would show an ad and then unlock
+                // Di implementasi nyata, ini akan menampilkan iklan
+                // Setelah iklan selesai, panggil unlockTemporary()
                 unlockTemporary();
             }
-            
-            // For demo purposes, we'll just unlock
-            unlockTemporary();
         }
         
         function unlockTemporary() {
-            document.getElementById('contentLocker').style.display = 'none';
-            document.getElementById('mainContent').classList.remove('locked-content');
+            contentLocker.style.display = 'none';
+            endMessage.style.display = 'none';
+            // Di implementasi nyata, ini akan memuat video berikutnya
+            alert('Konten berikutnya akan dimuat...');
         }
         
-        // In a real implementation, you might want to:
-        // 1. Set a cookie when content is unlocked
-        // 2. Check for that cookie on page load
-        // 3. Implement actual payment processing
-        // 4. Integrate with ad networks for offer walls
+        function replayVideo() {
+            contentLocker.style.display = 'none';
+            endMessage.style.display = 'none';
+            // Di implementasi nyata, ini akan memutar ulang video
+            video.src = video.src; // Reload video
+            videoEnded = false;
+            // Reset timer untuk demo
+            setTimeout(function() {
+                if(!videoEnded) {
+                    showContentLocker();
+                    videoEnded = true;
+                }
+            }, videoDuration);
+        }
     </script>
 </body>
 </html>

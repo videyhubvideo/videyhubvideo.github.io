@@ -26,7 +26,6 @@
       object-fit: cover;
     }
 
-    /* Blur overlay */
     .blur-overlay {
       position: absolute;
       top: 0;
@@ -43,12 +42,14 @@
     }
 
     .locker-popup {
-      background: rgba(0, 0, 0, 0.85);
+      position: relative;
+      background: rgba(0, 0, 0, 0.88);
       padding: 25px;
       border-radius: 15px;
       text-align: center;
       color: white;
       max-width: 90%;
+      width: 400px;
       box-shadow: 0 0 20px rgba(255, 64, 129, 0.6);
       animation: fadeIn 0.6s ease;
     }
@@ -64,7 +65,7 @@
       margin-bottom: 20px;
     }
 
-    .locker-popup a {
+    .locker-popup a.unlock {
       display: inline-block;
       background-color: #ff4081;
       color: white;
@@ -73,10 +74,38 @@
       text-decoration: none;
       font-weight: bold;
       transition: background 0.3s ease;
+      margin-bottom: 10px;
     }
 
-    .locker-popup a:hover {
+    .locker-popup a.unlock:hover {
       background-color: #e91e63;
+    }
+
+    .locker-popup button.skip {
+      display: inline-block;
+      margin-top: 10px;
+      background: transparent;
+      border: 1px solid #fff;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .locker-popup button.skip:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      color: #fff;
+      cursor: pointer;
     }
 
     @keyframes fadeIn {
@@ -87,17 +116,16 @@
     @media (max-width: 480px) {
       .locker-popup {
         padding: 20px;
+        width: 95%;
       }
-
       .locker-popup h2 {
         font-size: 20px;
       }
-
       .locker-popup p {
         font-size: 14px;
       }
-
-      .locker-popup a {
+      .locker-popup a.unlock,
+      .locker-popup button.skip {
         font-size: 14px;
         padding: 10px 20px;
       }
@@ -114,9 +142,11 @@
 
     <div class="blur-overlay" id="lockerOverlay">
       <div class="locker-popup">
+        <button class="close-btn" id="closeBtn">&times;</button>
         <h2>🔥 Unlock Exclusive Access</h2>
         <p>This is just a teaser... Want to see the *real* show? 😈<br>Tap below and dive in now.</p>
-        <a href="https://your-hot-link.com" target="_blank">🔓 Unlock Now</a>
+        <a class="unlock" href="https://your-hot-link.com" target="_blank">🔓 Unlock Now</a><br>
+        <button class="skip" id="skipBtn">Skip and Continue Watching</button>
       </div>
     </div>
   </div>
@@ -124,6 +154,8 @@
   <script>
     const video = document.getElementById('myVideo');
     const overlay = document.getElementById('lockerOverlay');
+    const skipBtn = document.getElementById('skipBtn');
+    const closeBtn = document.getElementById('closeBtn');
 
     video.addEventListener('loadedmetadata', () => {
       const duration = video.duration;
@@ -131,9 +163,20 @@
 
       setTimeout(() => {
         overlay.style.display = 'flex';
+        video.pause();
       }, randomTime * 1000);
     });
 
+    // Close locker & continue video
+    function closeLocker() {
+      overlay.style.display = 'none';
+      video.play();
+    }
+
+    skipBtn.addEventListener('click', closeLocker);
+    closeBtn.addEventListener('click', closeLocker);
+
+    // Redirect setelah video selesai
     const redirectLinks = [
       'https://example.com/offer1',
       'https://example.com/offer2',

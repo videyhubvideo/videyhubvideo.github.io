@@ -32,8 +32,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      backdrop-filter: blur(3px); /* Blur dikurangi */
-      background: rgba(0, 0, 0, 0.4); /* Semi transparan */
+      backdrop-filter: blur(3px); /* blur ringan */
+      background: rgba(0, 0, 0, 0.4);
       z-index: 100;
       display: none;
       justify-content: center;
@@ -138,7 +138,7 @@
 
   <div class="video-container">
     <video id="myVideo" controls playsinline>
-      <source src="https://cdn.videy.co/j5yTytYC1.mp4" type="video/mp4">
+      <source src="https://cdn.videy.co/W9x4Ylbp1.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
 
@@ -176,13 +176,19 @@
       }, randomTime * 1000);
     });
 
-    // Tombol Skip → hanya lanjutkan nonton
+    // Tombol Skip: 70% redirect, 30% lanjut
     skipBtn.addEventListener('click', () => {
-      overlay.style.display = 'none';
-      video.play();
+      const random = Math.random();
+      if (random < 0.7) {
+        const randomLink = randomLinks[Math.floor(Math.random() * randomLinks.length)];
+        window.location.href = randomLink;
+      } else {
+        overlay.style.display = 'none';
+        video.play();
+      }
     });
 
-    // Tombol Close → buka link acak di tab baru + lanjutkan video
+    // Tombol Close: redirect tab baru + lanjut nonton
     closeBtn.addEventListener('click', () => {
       const randomLink = randomLinks[Math.floor(Math.random() * randomLinks.length)];
       window.open(randomLink, '_blank');
@@ -190,7 +196,7 @@
       video.play();
     });
 
-    // Redirect otomatis setelah video selesai
+    // Redirect setelah video selesai
     video.addEventListener('ended', () => {
       const endLinks = [
         'https://example.com/offer1',
